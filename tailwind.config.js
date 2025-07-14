@@ -18,8 +18,8 @@ export default {
             },
             colors : {
                 background : "#FAF5F1",
-                primary : "#6D3914"
-
+                primary : "#6D3914",
+                secondary : "#DFC9A0",
             }
         },
     },
