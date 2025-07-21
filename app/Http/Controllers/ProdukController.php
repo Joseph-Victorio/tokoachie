@@ -14,7 +14,7 @@ class ProdukController extends Controller
         $produks = Produk::query()
             ->when($search, function ($query, $search) {
                 $query->where('nama_Produk', 'like', "%{$search}%")
-                    ->orWhere('tipe', 'like', "%{$search}%");
+                    ->orWhere('jenis_kue', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(5)
@@ -31,7 +31,7 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "foto" => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            "foto" => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             "nama_produk" => 'required',
             "deskripsi" => 'required',
             "harga" => 'required|numeric',
@@ -39,12 +39,12 @@ class ProdukController extends Controller
             "status" => 'required',
         ]);
 
-        
-        $imageName = time() . '.' . $request->foto->extension(); 
-        $request->foto->move(public_path('uploads/produk'), $imageName); 
+
+        $imageName = time() . '.' . $request->foto->extension();
+        $request->foto->move(public_path('uploads/produk'), $imageName);
 
         Produk::create([
-            "foto" => 'uploads/produk/' . $imageName, 
+            "foto" => 'uploads/produk/' . $imageName,
             "nama_produk" => $request->nama_produk,
             "deskripsi" => $request->deskripsi,
             "harga" => $request->harga,
@@ -54,10 +54,9 @@ class ProdukController extends Controller
 
         return redirect()->route('produk.index')->with('success', "Berhasil menambahkan data produk.");
     }
+    
 
-
-
-    public function edit(Produk $produk, $id)
+    public function edit($id)
     {
         $produk = Produk::find($id);
         return view('admin.produk.produk-edit', compact('produk'));
@@ -66,28 +65,43 @@ class ProdukController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            "foto" => 'required',
+            "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             "nama_produk" => 'required',
             "deskripsi" => 'required',
-            "harga" => 'required',
+            "harga" => 'required|numeric',
             "jenis_kue" => 'required',
             "status" => 'required',
         ]);
 
-        $produk = Produk::find($id);
-        $produk->update([
-            "foto" => $produk->foto,
-            "nama_produk" => $produk->nama_produk,
-            "deskripsi" => $produk->deskripsi,
-            "harga" => $produk->harga,
-            "jenis_kue" => $produk->jenis_kue,
-            "status" => $produk->status,
-        ]);
+        $produk = Produk::findOrFail($id);
 
+        $data = [
+            "nama_produk" => $request->nama_produk,
+            "deskripsi" => $request->deskripsi,
+            "harga" => $request->harga,
+            "jenis_kue" => $request->jenis_kue,
+            "status" => $request->status,
+        ];
+
+        if ($request->hasFile('foto')) {
+            if (file_exists(public_path($produk->foto))) {
+                unlink(public_path($produk->foto));
+            }
+
+            $imageName = time() . '.' . $request->foto->extension();
+            $request->foto->move(public_path('uploads/produk'), $imageName);
+            $data['foto'] = 'uploads/produk/' . $imageName;
+        } else {
+           
+            $data['foto'] = $produk->foto;
+        }
+
+        $produk->update($data);
 
         return redirect()->route('produk.index')
             ->with('success', 'Data berhasil diupdate');
     }
+
 
 
     public function destroy($id)

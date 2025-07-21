@@ -15,8 +15,8 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-background flex ">
+    <body class="font-sans bg-background">
+        <div class=" bg-background flex flex-col md:flex-row ">
             @include('layouts.navigation')
 
             <main class="p-5 bg-background">

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('review_pembelis', function (Blueprint $table) {
             $table->id();
+            $table->string("foto");
             $table->string("nama_klien");
             $table->text("isi_review");
             $table->timestamps();

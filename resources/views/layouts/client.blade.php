@@ -16,7 +16,7 @@
     <header class="">
         @include('layouts.client-navigation')
     </header>
-    <main class="">
+    <main class="bg-primary">
         @yield('content')
     </main>
     <footer>

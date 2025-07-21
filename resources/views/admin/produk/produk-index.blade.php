@@ -51,7 +51,7 @@
                         </td>
                         <td class="px-4 py-2 text-xs sm:text-sm text-gray-800">{{ $produk->nama_produk }}
                         </td>
-                        <td class="px-4 py-2 text-xs sm:text-sm text-gray-800">{{ $produk->deskripsi }}
+                        <td class="px-4 py-2 text-xs sm:text-sm text-gray-800"><p class="line-clamp-2">{{ $produk->deskripsi }}</p>
                         </td>
                         <td class="px-4 py-2 text-xs sm:text-sm text-gray-800">Rp
                             {{ number_format($produk->harga, 0, ',', '.') }}</td>
@@ -68,5 +68,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="mt-3 flex justify-center">
+            {{ $produks->links() }}
+        </div>
     </div>
 @endsection
