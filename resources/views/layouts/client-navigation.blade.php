@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="relative z-50">
+<nav x-data="{ open: false }" class="relative z-50 bg-tersier">
     <div class="m-5 p-5 font-sansita text-secondary flex justify-between items-center">
 
         <div>

@@ -9,7 +9,7 @@
 @endphp
 
 @section('content')
-<div class="max-w-2xl mx-auto py-8 space-y-8 text-[#5A2B0C]">
+<div class="max-w-2xl mx-auto py-8 space-y-8 text-[#5A2B0C] font-sansita">
 
     {{-- Cart Items --}}
     @foreach ($cart as $item)
@@ -43,8 +43,8 @@
 
     {{-- Formulir Pembeli --}}
     <div class="bg-[#FDF6ED] p-6 rounded-lg shadow">
-        <h2 class="text-xl font-bold mb-4">Formulir Pembeli</h2>
-        <form id="pembeliForm">
+        <h2 class="text-xl font-bold mb-4 text-primary ">Formulir Pembeli</h2>
+        <form id="pembeliForm" class="text-primary">
             @csrf
             <div class="space-y-3">
                 <div>
@@ -78,8 +78,8 @@
     </div>
 
     {{-- Total Section --}}
-    <div class="bg-[#FDF6ED] p-6 rounded-lg shadow text-sm">
-        <h3 class="text-lg font-bold mb-3 text-center">Total Pesanan</h3>
+    <div class="bg-[#FDF6ED] p-6 rounded-lg shadow text-sm font-anek">
+        <h3 class="text-lg font-bold mb-3 text-center font-sansita ">Total Pesanan</h3>
         <div class="grid grid-cols-2 gap-2">
             <p>Total Produk:</p>
             <p class="text-right">{{ collect($cart)->sum('quantity') }}</p>
@@ -87,7 +87,7 @@
             <p class="text-right">Rp {{ number_format($total, 0, ',', '.') }}</p>
         </div>
 
-        <button id="checkout-button" class="w-full mt-6 bg-[#5A2B0C] hover:bg-[#7A3E17] text-white py-2 rounded">
+        <button id="checkout-button" class="w-full mt-6 bg-[#5A2B0C] hover:bg-[#7A3E17] text-white py-2 rounded font-sansita">
             Pesan Produk
         </button>
     </div>

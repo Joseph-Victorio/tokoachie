@@ -1,6 +1,10 @@
 @extends('layouts.client')
 
 @section('content')
+<div class="w-full bg-tersier text-center">
+    <h2 class="md:text-5xl p-5 font-sansita text-primary">Produk</h2>
+    <br><br><br>
+</div>
     <div class="p-5">
         <form method="GET" action="{{ route('produk') }}" class="w-full sm:w-auto" autocomplete="off">
             <input type="text" name="search" placeholder="Cari produk..." value="{{ request('search') }}"
