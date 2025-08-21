@@ -78,7 +78,7 @@
         <div class="flex gap-4 items-center mt-4">
 
             <div class="bg-white text-primary px-6 py-3 rounded-2xl">
-                <a href="https://wa.me/628989000007" class="flex gap-2 items-center">
+                <a href="https://wa.me/62895612525607" class="flex gap-2 items-center">
                     <img src="{{ asset('/gambar/phone.svg') }}" alt="" class="w-5">Konsultasi
                 </a>
             </div>

@@ -7,17 +7,11 @@ use Illuminate\Http\Request;
 
 class ReviewPembeliController extends Controller
 {
-     public function index(Request $request)
+    public function index(Request $request)
     {
-        
-
         $reviews = ReviewPembeli::latest()->paginate(5);
-            
-            
-
         return view('admin.review-pembeli.review-index', compact('reviews'));
     }
-
 
     public function create()
     {
@@ -30,12 +24,16 @@ class ReviewPembeliController extends Controller
             "foto" => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             "nama_klien" => 'required',
             "isi_review" => 'required',
-            
         ]);
 
-
         $imageName = time() . '.' . $request->foto->extension();
-        $request->foto->move(public_path('uploads/review-pembeli'), $imageName);
+        $uploadPath = public_path('uploads/review-pembeli');
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $request->foto->move($uploadPath, $imageName);
 
         ReviewPembeli::create([
             "foto" => 'uploads/review-pembeli/' . $imageName,
@@ -48,7 +46,7 @@ class ReviewPembeliController extends Controller
 
     public function edit($id)
     {
-        $review = ReviewPembeli::find($id);
+        $review = ReviewPembeli::findOrFail($id);
         return view('admin.review-pembeli.review-edit', compact('review'));
     }
 
@@ -58,42 +56,49 @@ class ReviewPembeliController extends Controller
             "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             "nama_klien" => 'required',
             "isi_review" => 'required',
-            
         ]);
 
-        $ReviewPembeli = ReviewPembeli::findOrFail($id);
+        $review = ReviewPembeli::findOrFail($id);
 
         $data = [
             "nama_klien" => $request->nama_klien,
             "isi_review" => $request->isi_review,
-            
         ];
 
         if ($request->hasFile('foto')) {
-            if (file_exists(public_path($ReviewPembeli->foto))) {
-                unlink(public_path($ReviewPembeli->foto));
+            $oldFile = public_path($review->foto);
+            if ($review->foto && is_file($oldFile)) {
+                unlink($oldFile);
             }
 
             $imageName = time() . '.' . $request->foto->extension();
-            $request->foto->move(public_path('uploads/review-pembeli'), $imageName);
+            $uploadPath = public_path('uploads/review-pembeli');
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $request->foto->move($uploadPath, $imageName);
             $data['foto'] = 'uploads/review-pembeli/' . $imageName;
         } else {
-           
-            $data['foto'] = $ReviewPembeli->foto;
+            $data['foto'] = $review->foto;
         }
 
-        $ReviewPembeli->update($data);
+        $review->update($data);
 
-        return redirect()->route('review.index')
-            ->with('success', 'Data berhasil diupdate');
+        return redirect()->route('review.index')->with('success', 'Data berhasil diupdate');
     }
-
-
 
     public function destroy($id)
     {
-        ReviewPembeli::find($id)->delete();
+        $review = ReviewPembeli::findOrFail($id);
 
-        return redirect()->route('review.index');
+        if ($review->foto && is_file(public_path($review->foto))) {
+            unlink(public_path($review->foto));
+        }
+
+        $review->delete();
+
+        return redirect()->route('review.index')->with('success', 'Data berhasil dihapus');
     }
 }

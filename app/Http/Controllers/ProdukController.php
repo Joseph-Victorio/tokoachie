@@ -9,12 +9,14 @@ class ProdukController extends Controller
 {
     public function index(Request $request)
     {
+        dd(public_path('uploads/produk'));
+
         $search = $request->input('search');
 
         $produks = Produk::query()
             ->when($search, function ($query, $search) {
-                $query->where('nama_Produk', 'like', "%{$search}%")
-                    ->orWhere('jenis_kue', 'like', "%{$search}%");
+                $query->where('nama_produk', 'like', "%{$search}%")
+                      ->orWhere('jenis_kue', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(5)
@@ -39,9 +41,14 @@ class ProdukController extends Controller
             "status" => 'required',
         ]);
 
-
         $imageName = time() . '.' . $request->foto->extension();
-        $request->foto->move(public_path('uploads/produk'), $imageName);
+        $uploadPath = public_path('uploads/produk');
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $request->foto->move($uploadPath, $imageName);
 
         Produk::create([
             "foto" => 'uploads/produk/' . $imageName,
@@ -54,11 +61,10 @@ class ProdukController extends Controller
 
         return redirect()->route('produk.index')->with('success', "Berhasil menambahkan data produk.");
     }
-    
 
     public function edit($id)
     {
-        $produk = Produk::find($id);
+        $produk = Produk::findOrFail($id);
         return view('admin.produk.produk-edit', compact('produk'));
     }
 
@@ -84,30 +90,44 @@ class ProdukController extends Controller
         ];
 
         if ($request->hasFile('foto')) {
-            if (file_exists(public_path($produk->foto))) {
-                unlink(public_path($produk->foto));
+            if ($produk->foto) {
+                $oldFile = public_path($produk->foto);
+                if (is_file($oldFile)) {
+                    unlink($oldFile);
+                }
             }
 
             $imageName = time() . '.' . $request->foto->extension();
-            $request->foto->move(public_path('uploads/produk'), $imageName);
+            $uploadPath = public_path('uploads/produk');
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $request->foto->move($uploadPath, $imageName);
             $data['foto'] = 'uploads/produk/' . $imageName;
         } else {
-           
             $data['foto'] = $produk->foto;
         }
 
         $produk->update($data);
 
-        return redirect()->route('produk.index')
-            ->with('success', 'Data berhasil diupdate');
+        return redirect()->route('produk.index')->with('success', 'Data berhasil diupdate');
     }
-
-
 
     public function destroy($id)
     {
-        Produk::find($id)->delete();
+        $produk = Produk::findOrFail($id);
 
-        return redirect()->route('produk.index');
+        if ($produk->foto) {
+            $oldFile = public_path($produk->foto);
+            if (is_file($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
+        $produk->delete();
+
+        return redirect()->route('produk.index')->with('success', 'Data berhasil dihapus');
     }
 }

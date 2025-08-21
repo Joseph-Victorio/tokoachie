@@ -14,7 +14,7 @@
                     <a href="https://www.instagram.com/tokoachie_?igsh=MW5qbXM1YnY2NHpheg==" target="_blank">
                         <i class="fab fa-instagram hover:text-yellow-600 transition"></i>
                     </a>
-                    <a href="https://wa.me/628989000007" target="_blank">
+                    <a href="https://wa.me/62895612525607" target="_blank">
                         <i class="fab fa-whatsapp hover:text-green-600 transition"></i>
                     </a>
                 </div>

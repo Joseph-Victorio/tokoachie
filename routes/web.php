@@ -13,6 +13,7 @@ Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 Route::get('/tentang-kami', function () {
     return view('client.tentang-kami');
 })->name('tentang-kami');
+
 Route::get('/produk', [JualProdukController::class, 'index'])->name('produk');
 
 Route::get('/dashboard', function () {
